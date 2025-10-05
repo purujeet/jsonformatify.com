@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Formatify - Best Online JSON Formatter & Validator | Free Tool</title>
-    <meta name="description" content="Instantly format, validate, beautify, minify, and repair invalid JSON data with JSON Formatify. Free online JSON tool with tree view, real-time search, copy/download, dark mode, and no signup required. Fast, secure, and easy to use for developers.">
-    <meta name="keywords" content="json formatter, json validator, online json tool, json beautifier, json minifier, json fixer, free json editor, json tree view">
+    <title>JSON Formatify - Best Online JSON Formatter & Validator</title>
+    <meta name="description" content="Instantly format, validate, beautify, minify, and repair JSON data with JSON Formatify. Free online JSON tool with tree view and dark mode.">
+    <meta name="keywords" content="json formatter, json validator, online json tool, json beautifier, json minifier, json fixer, free json editor">
     <meta name="robots" content="index, follow">
     <meta name="author" content="JSON Formatify">
     <meta name="revisit-after" content="1 days">
@@ -57,20 +57,20 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             font-family: Arial, sans-serif;
             background: var(--bg-gradient);
             color: var(--text-color);
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .logo {
+        nav {
             background: var(--logo-gradient);
             color: white;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            padding: 15px 20px;
+            align-items: center;
             flex: none;
             transition: background 0.3s ease;
         }
@@ -94,13 +94,30 @@
             opacity: 0.9;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         .theme-toggle {
             display: flex;
             align-items: center;
             gap: 5px;
             font-size: 12px;
             color: white;
-            margin-top: 5px;
         }
 
         .theme-toggle input[type="checkbox"] {
@@ -109,7 +126,6 @@
             accent-color: var(--toggle-color);
         }
 
-        /* Scoped styles to avoid impacting external CSS */
         .json-formatter-container {
             font-family: Arial, sans-serif;
             display: flex;
@@ -196,7 +212,6 @@
             transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Search bar, buttons, and view selector styles */
         .json-formatter-container .controls {
             margin-bottom: 8px;
             display: flex;
@@ -232,7 +247,6 @@
             border-color: var(--toggle-color);
         }
 
-        /* Simplified Tree View Styles */
         .json-formatter-container .tree-node {
             margin-left: 15px;
             list-style: none;
@@ -278,7 +292,6 @@
             padding: 2px 0;
         }
 
-        /* Color coding for JSON value types */
         .json-formatter-container .tree-node li.string {
             color: var(--tree-string);
         }
@@ -295,14 +308,12 @@
             color: var(--tree-null);
         }
 
-        /* Inline value styling for leaf nodes */
         .json-formatter-container .tree-node li.leaf {
             display: block;
             margin-right: 10px;
             margin-bottom: 2px;
         }
 
-        /* Highlight for search matches */
         .json-formatter-container .highlight {
             background-color: var(--highlight-bg);
         }
@@ -333,19 +344,44 @@
         [data-theme="dark"] .json-formatter-container .pane {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
+
+        footer {
+            background: var(--logo-gradient);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <div class="logo">
+    <!-- Navigation -->
+    <nav>
         <div class="logo-content">
             <div class="logo-text">jsonformatify.com</div>
             <div class="subtitle">Best JSON Formatter and Validator</div>
         </div>
-        <div class="theme-toggle">
-            <input type="checkbox" id="darkModeToggle">
-            <label for="darkModeToggle">Dark Mode</label>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <div class="theme-toggle">
+                <input type="checkbox" id="darkModeToggle">
+                <label for="darkModeToggle">Dark Mode</label>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- Tool Container -->
     <div class="json-formatter-container">
         <div class="pane">
             <h3>Input JSON</h3>
@@ -381,11 +417,15 @@
         </div>
     </div>
 
-    <script>
-        let parsedJson = null; // Store parsed JSON for rendering and searching
-        let formattedJson = ''; // Store formatted JSON string
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 JSON Formatify. All rights reserved. | <a href="#top">Back to Top</a></p>
+    </footer>
 
-        // Dark mode toggle functionality
+    <script>
+        let parsedJson = null;
+        let formattedJson = '';
+
         const darkModeToggle = document.getElementById('darkModeToggle');
         const currentTheme = localStorage.getItem('theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -414,7 +454,7 @@
             try {
                 const parsed = JSON.parse(input);
                 document.getElementById('inputJson').value = JSON.stringify(parsed, null, 2);
-                updateOutput(parsed); // Update output after formatting
+                updateOutput(parsed);
             } catch (e) {
                 inputError.textContent = 'Invalid JSON: ' + e.message;
             }
@@ -429,7 +469,7 @@
             try {
                 const parsed = JSON.parse(input);
                 document.getElementById('inputJson').value = JSON.stringify(parsed);
-                updateOutput(parsed); // Update output after compacting
+                updateOutput(parsed);
             } catch (e) {
                 inputError.textContent = 'Invalid JSON: ' + e.message;
             }
@@ -471,7 +511,6 @@
             output.innerHTML = '';
 
             try {
-                // Try parsing original input first
                 parsedJson = JSON.parse(input);
                 formattedJson = JSON.stringify(parsedJson, null, 2);
                 document.getElementById('inputJson').value = formattedJson;
@@ -479,42 +518,28 @@
             } catch (e) {
                 try {
                     let corrected = input.trim();
-                    // Step 1: Remove JavaScript-style comments (// and /* */)
                     corrected = corrected.replace(/\/\/.*$/gm, '');
                     corrected = corrected.replace(/\/\*[\s\S]*?\*\//g, '');
-                    // Step 2: Add quotes around unquoted keys
                     corrected = corrected.replace(/([{,]\s*)(\w+)(?=\s*:)/g, '$1"$2"');
-                    // Step 3: Replace single quotes with double quotes
                     corrected = corrected.replace(/'/g, '"');
-                    // Step 4: Add quotes around unquoted string values
                     corrected = corrected.replace(/:(\s*)(\w+)(?=\s*[,}])/g, ':$1"$2"');
-                    // Step 5: Fix invalid boolean/null literals
                     corrected = corrected.replace(/\b(True|False|TRUE|FALSE|Null|NULL)\b/g, (match) => {
                         const lower = match.toLowerCase();
                         return lower === 'true' || lower === 'false' ? lower : 'null';
                     });
-                    // Step 6: Remove trailing commas in objects and arrays
                     corrected = corrected.replace(/,(\s*[}\]])/g, '$1');
-                    // Step 7: Add missing commas between key-value pairs, arrays, or objects
                     corrected = corrected.replace(/([}\]"'])(?=\s*"[^"]*"\s*:)/g, '$1,');
                     corrected = corrected.replace(/([}\]"'])(?=\s*\[)/g, '$1,');
                     corrected = corrected.replace(/([}\]"'])(?=\s*{)/g, '$1,');
-                    // Step 8: Fix malformed numbers (leading zeros, multiple decimals)
                     corrected = corrected.replace(/:(\s*)0+(\d+\.?\d*)/g, ':$1$2');
                     corrected = corrected.replace(/(\d)\.(\d*)\.(\d*)/g, '$1.$2$3');
-                    // Step 9: Fix invalid escape sequences
                     corrected = corrected.replace(/\\[^"\\/bfnrtu]/g, '\\\\');
-                    // Step 10: Add missing colons after keys
                     corrected = corrected.replace(/("\w+")(\s*[{["])/g, '$1:$2');
-                    // Step 11: Remove extra colons
                     corrected = corrected.replace(/:+/g, ':');
-                    // Step 12: Quote unquoted Unicode characters in strings
                     corrected = corrected.replace(/"([^"]*?)(\p{Extended_Pictographic}|\p{Emoji_Presentation})([^"]*?)"/gu, (match, p1, emoji, p2) => {
                         return `"${p1}\\u${emoji.codePointAt(0).toString(16).padStart(4, '0')}${p2}"`;
                     });
-                    // Step 13: Add missing closing braces/brackets
                     corrected = addMissingBraces(corrected);
-                    // Step 14: Remove extra whitespace
                     corrected = corrected.replace(/\s+/g, ' ').trim();
                     parsedJson = JSON.parse(corrected);
                     formattedJson = JSON.stringify(parsedJson, null, 2);
@@ -603,7 +628,6 @@
             let openBrackets = 0;
             let result = input;
 
-            // Count open and close braces/brackets
             for (let i = 0; i < input.length; i++) {
                 if (input[i] === '{') openBraces++;
                 else if (input[i] === '}') openBraces--;
@@ -611,13 +635,11 @@
                 else if (input[i] === ']') openBrackets--;
             }
 
-            // Add missing closing braces
             while (openBraces > 0) {
                 result += '}';
                 openBraces--;
             }
 
-            // Add missing closing brackets
             while (openBrackets > 0) {
                 result += ']';
                 openBrackets--;
@@ -694,7 +716,7 @@
             ul.className = 'tree-node';
             if (data !== null && typeof data === 'object') {
                 const li = document.createElement('li');
-                li.className = 'tree-node';  // Expanded by default
+                li.className = 'tree-node';
                 const toggle = document.createElement('span');
                 toggle.className = 'toggle';
                 toggle.onclick = () => toggleNode(toggle, li);
@@ -709,7 +731,6 @@
                 renderNode(data, content, '');
                 ul.appendChild(li);
             } else {
-                // Handle non-object/array root (rare case, e.g., a single string or number)
                 const li = document.createElement('li');
                 li.className = 'leaf';
                 const keyValueSpan = document.createElement('span');
@@ -730,7 +751,7 @@
                 data.forEach((item, index) => {
                     const li = document.createElement('li');
                     if (item !== null && typeof item === 'object') {
-                        li.className = 'tree-node';  // Expanded by default
+                        li.className = 'tree-node';
                         const toggle = document.createElement('span');
                         toggle.className = 'toggle';
                         toggle.onclick = () => toggleNode(toggle, li);
@@ -760,7 +781,7 @@
                 Object.keys(data).forEach(key => {
                     const li = document.createElement('li');
                     if (data[key] !== null && typeof data[key] === 'object') {
-                        li.className = 'tree-node';  // Expanded by default
+                        li.className = 'tree-node';
                         const toggle = document.createElement('span');
                         toggle.className = 'toggle';
                         toggle.onclick = () => toggleNode(toggle, li);
@@ -840,7 +861,6 @@
             }
         }
 
-        // Add input event listener for real-time updates
         document.getElementById('inputJson').addEventListener('input', function() {
             const input = this.value;
             const inputError = document.getElementById('inputError');
