@@ -261,6 +261,7 @@
             user-select: none;
             font-weight: bold;
             transition: color 0.3s ease;
+            font-size: 12px;
         }
 
         .json-formatter-container .tree-node.collapsed .toggle::before {
@@ -687,16 +688,12 @@
         function collapseAll() {
             document.querySelectorAll('.tree-node').forEach(node => {
                 node.classList.add('collapsed');
-                const toggle = node.querySelector('.toggle');
-                if (toggle) toggle.textContent = '';
             });
         }
 
         function expandAll() {
             document.querySelectorAll('.tree-node').forEach(node => {
                 node.classList.remove('collapsed');
-                const toggle = node.querySelector('.toggle');
-                if (toggle) toggle.textContent = '';
             });
         }
 
@@ -706,7 +703,7 @@
             ul.className = 'tree-node';
             if (data !== null && typeof data === 'object') {
                 const li = document.createElement('li');
-                li.className = 'tree-node collapsed';
+                li.className = 'tree-node';  // Expanded by default
                 const toggle = document.createElement('span');
                 toggle.className = 'toggle';
                 toggle.onclick = () => toggleNode(toggle, li);
@@ -742,7 +739,7 @@
                 data.forEach((item, index) => {
                     const li = document.createElement('li');
                     if (item !== null && typeof item === 'object') {
-                        li.className = 'tree-node collapsed';
+                        li.className = 'tree-node';  // Expanded by default
                         const toggle = document.createElement('span');
                         toggle.className = 'toggle';
                         toggle.onclick = () => toggleNode(toggle, li);
@@ -772,7 +769,7 @@
                 Object.keys(data).forEach(key => {
                     const li = document.createElement('li');
                     if (data[key] !== null && typeof data[key] === 'object') {
-                        li.className = 'tree-node collapsed';
+                        li.className = 'tree-node';  // Expanded by default
                         const toggle = document.createElement('span');
                         toggle.className = 'toggle';
                         toggle.onclick = () => toggleNode(toggle, li);
@@ -804,7 +801,6 @@
         function toggleNode(toggle, li) {
             const isCollapsed = li.classList.contains('collapsed');
             li.classList.toggle('collapsed', !isCollapsed);
-            toggle.textContent = '';
         }
 
         function searchTree() {
@@ -825,8 +821,6 @@
             document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
             document.querySelectorAll('.tree-node.collapsed').forEach(node => {
                 node.classList.remove('collapsed');
-                const toggle = node.querySelector('.toggle');
-                if (toggle) toggle.textContent = '';
             });
 
             if (!searchInput || view !== 'tree') {
@@ -843,8 +837,6 @@
                     let parent = element.closest('.tree-node');
                     while (parent) {
                         parent.classList.remove('collapsed');
-                        const toggle = parent.querySelector('.toggle');
-                        if (toggle) toggle.textContent = '';
                         parent = parent.parentElement.closest('.tree-node');
                     }
                     matchFound = true;
