@@ -3,18 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Formatter</title>
+    <title>JSON Formatify - Best Online JSON Formatter & Validator | Free Tool</title>
+    <meta name="description" content="Instantly format, validate, beautify, minify, and repair invalid JSON data with JSON Formatify. Free online JSON tool with tree view, real-time search, copy/download, dark mode, and no signup required. Fast, secure, and easy to use for developers.">
+    <meta name="keywords" content="json formatter, json validator, online json tool, json beautifier, json minifier, json fixer, free json editor, json tree view">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="JSON Formatify">
+    <meta name="revisit-after" content="1 days">
+    <meta property="og:title" content="JSON Formatify - Best Online JSON Formatter & Validator">
+    <meta property="og:description" content="Format, validate, and beautify your JSON data instantly. Free tool with advanced features like tree view and search.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jsonformatify.com">
+    <meta property="og:image" content="https://jsonformatify.com/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JSON Formatify - Best Online JSON Formatter & Validator">
+    <meta name="twitter:description" content="Free online JSON formatter, validator, and beautifier. Try it now!">
+    <meta name="twitter:image" content="https://jsonformatify.com/twitter-image.jpg">
+    <link rel="canonical" href="https://jsonformatify.com">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --logo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --button-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --button-hover-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            --pane-bg: #fff;
+            --text-color: #333;
+            --output-bg: #fafafa;
+            --border-color: #ddd;
+            --error-color: #d32f2f;
+            --success-color: #28a745;
+            --highlight-bg: #fff9c4;
+            --tree-string: #d32f2f;
+            --tree-number: #1976d2;
+            --tree-boolean: #7b1fa2;
+            --tree-null: #616161;
+            --toggle-color: #667eea;
+            --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --logo-gradient: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            --button-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --button-hover-gradient: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            --pane-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --output-bg: #1a1a1a;
+            --border-color: #444;
+            --error-color: #dc3545;
+            --success-color: #198754;
+            --highlight-bg: #333300;
+            --tree-string: #ff6b6b;
+            --tree-number: #4dabf7;
+            --tree-boolean: #a855f7;
+            --tree-null: #9ca3af;
+            --toggle-color: #4f46e5;
+            --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .logo {
+            background: var(--logo-gradient);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px 20px;
+            flex: none;
+            transition: background 0.3s ease;
+        }
+
+        .logo-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .theme-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--toggle-color);
+        }
+
         /* Scoped styles to avoid impacting external CSS */
         .json-formatter-container {
             font-family: Arial, sans-serif;
             display: flex;
-            height: 100vh;
+            flex: 1;
             margin: 0;
             padding: 10px;
             box-sizing: border-box;
-            background-color: #f4f4f4;
+            background: transparent;
             isolation: isolate;
+            transition: background 0.3s ease;
         }
 
         .json-formatter-container .pane {
@@ -22,9 +136,12 @@
             display: flex;
             flex-direction: column;
             margin: 0 5px;
-            background-color: #fff;
-            border-radius: 4px;
+            background-color: var(--pane-bg);
+            border-radius: 8px;
             padding: 10px;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .json-formatter-container textarea {
@@ -33,10 +150,13 @@
             resize: none;
             font-family: 'Courier New', monospace;
             font-size: 13px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 8px;
             box-sizing: border-box;
+            background-color: var(--pane-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
 
         .json-formatter-container .buttons {
@@ -53,7 +173,7 @@
             margin: 0 2px;
             border: none;
             border-radius: 4px;
-            background-color: #007bff;
+            background: var(--button-gradient);
             color: #fff;
             cursor: pointer;
             font-size: 12px;
@@ -61,22 +181,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--button-shadow);
         }
 
         .json-formatter-container button:hover {
-            background-color: #0056b3;
+            background: var(--button-hover-gradient);
+            box-shadow: var(--button-hover-shadow);
+            transform: translateY(-1px);
         }
 
         .json-formatter-container #output {
             height: 70%;
             overflow-y: auto;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 8px;
             font-family: 'Courier New', monospace;
             font-size: 13px;
-            background-color: #fafafa;
+            background-color: var(--output-bg);
+            color: var(--text-color);
             white-space: pre-wrap;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Search bar, buttons, and view selector styles */
@@ -91,23 +217,28 @@
         .json-formatter-container .controls input {
             flex: 1;
             padding: 6px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 12px;
+            background-color: var(--pane-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
 
         .json-formatter-container .controls select {
             padding: 6px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 12px;
-            background-color: #fff;
+            background-color: var(--pane-bg);
+            color: var(--text-color);
             cursor: pointer;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
 
         .json-formatter-container .controls select:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: var(--toggle-color);
         }
 
         /* Simplified Tree View Styles */
@@ -125,10 +256,11 @@
             width: 15px;
             text-align: center;
             margin-right: 5px;
-            color: #007bff;
+            color: var(--toggle-color);
             cursor: pointer;
             user-select: none;
             font-weight: bold;
+            transition: color 0.3s ease;
         }
 
         .json-formatter-container .tree-node.collapsed .toggle::before {
@@ -142,7 +274,8 @@
         }
 
         .json-formatter-container .tree-node > span:not(.toggle) {
-            color: #333;
+            color: var(--text-color);
+            transition: color 0.3s ease;
         }
 
         .json-formatter-container .tree-content {
@@ -155,19 +288,19 @@
 
         /* Color coding for JSON value types */
         .json-formatter-container .tree-node li.string {
-            color: #d32f2f;
+            color: var(--tree-string);
         }
 
         .json-formatter-container .tree-node li.number {
-            color: #1976d2;
+            color: var(--tree-number);
         }
 
         .json-formatter-container .tree-node li.boolean {
-            color: #7b1fa2;
+            color: var(--tree-boolean);
         }
 
         .json-formatter-container .tree-node li.null {
-            color: #616161;
+            color: var(--tree-null);
         }
 
         /* Inline value styling for leaf nodes */
@@ -179,7 +312,7 @@
 
         /* Highlight for search matches */
         .json-formatter-container .highlight {
-            background-color: #fff9c4;
+            background-color: var(--highlight-bg);
         }
 
         .json-formatter-container .error, .json-formatter-container .success {
@@ -189,15 +322,38 @@
         }
 
         .json-formatter-container .error {
-            color: #d32f2f;
+            color: var(--error-color);
         }
 
         .json-formatter-container .success {
-            color: #28a745;
+            color: var(--success-color);
+        }
+
+        h3 {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+
+        .json-formatter-container .pane {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .json-formatter-container .pane {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
+    <div class="logo">
+        <div class="logo-content">
+            <div class="logo-text">jsonformatify.com</div>
+            <div class="subtitle">Best JSON Formatter and Validator</div>
+        </div>
+        <div class="theme-toggle">
+            <input type="checkbox" id="darkModeToggle">
+            <label for="darkModeToggle">Dark Mode</label>
+        </div>
+    </div>
     <div class="json-formatter-container">
         <div class="pane">
             <h3>Input JSON</h3>
@@ -236,6 +392,26 @@
     <script>
         let parsedJson = null; // Store parsed JSON for rendering and searching
         let formattedJson = ''; // Store formatted JSON string
+
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const currentTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (currentTheme === 'dark' || (!currentTheme && prefersDark)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkModeToggle.checked = true;
+        }
+
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
 
         function formatJson() {
             const input = document.getElementById('inputJson').value;
@@ -710,4 +886,5 @@
         });
     </script>
 </body>
+
 </html>
