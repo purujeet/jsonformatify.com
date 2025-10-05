@@ -1,0 +1,378 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About JSON Formatify - Free JSON Formatter & Validator</title>
+    <meta name="description" content="Learn about JSON Formatify, the best free online JSON formatter and validator. Discover our features, how to use the tool, and why developers love it.">
+    <meta name="keywords" content="about json formatter, json validator, online json tool, json beautifier, free json editor">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="JSON Formatify">
+    <meta name="revisit-after" content="1 days">
+    <link rel="canonical" href="https://jsonformatify.com/about.html">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --logo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --button-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --button-hover-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            --pane-bg: #fff;
+            --text-color: #333;
+            --output-bg: #fafafa;
+            --border-color: #ddd;
+            --error-color: #d32f2f;
+            --success-color: #28a745;
+            --highlight-bg: #fff9c4;
+            --tree-string: #d32f2f;
+            --tree-number: #1976d2;
+            --tree-boolean: #7b1fa2;
+            --tree-null: #616161;
+            --toggle-color: #667eea;
+            --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --logo-gradient: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            --button-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --button-hover-gradient: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            --pane-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --output-bg: #1a1a1a;
+            --border-color: #444;
+            --error-color: #dc3545;
+            --success-color: #198754;
+            --highlight-bg: #333300;
+            --tree-string: #ff6b6b;
+            --tree-number: #4dabf7;
+            --tree-boolean: #a855f7;
+            --tree-null: #9ca3af;
+            --toggle-color: #4f46e5;
+            --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        nav {
+            background: var(--logo-gradient);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: none;
+            transition: background 0.3s ease;
+        }
+
+        .logo-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .theme-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--toggle-color);
+        }
+
+        .hero {
+            background: var(--logo-gradient);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            flex: none;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .hero .cta-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .hero .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: var(--pane-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--toggle-color);
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .how-to-steps {
+            list-style: none;
+            padding: 0;
+        }
+
+        .how-to-steps li {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .how-to-steps li::before {
+            content: counter(step);
+            background: var(--toggle-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .how-to-steps {
+            counter-reset: step;
+        }
+
+        pre {
+            background: var(--output-bg);
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+
+        footer {
+            background: var(--logo-gradient);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo-content">
+            <div class="logo-text">jsonformatify.com</div>
+            <div class="subtitle">Best JSON Formatter and Validator</div>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <div class="theme-toggle">
+                <input type="checkbox" id="darkModeToggle">
+                <label for="darkModeToggle">Dark Mode</label>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>JSON Formatify - The Best Free Online JSON Formatter & Validator</h1>
+        <p>Transform messy JSON into beautifully formatted, validated data in seconds. Our powerful tool helps developers format, beautify, minify, and fix JSON effortlessly—no sign-up required.</p>
+        <button class="cta-button" onclick="window.location.href='index.html'">Start Formatting JSON Now</button>
+    </section>
+
+    <section class="content-section">
+        <h2>About JSON Formatify</h2>
+        <p>JSON Formatify is your go-to <strong>online JSON formatter</strong> and <strong>JSON validator</strong>, designed to make working with JSON data simple and efficient. Whether you're debugging API responses, preparing data for your next project, or just need to prettify a minified JSON string, our tool has you covered.</p>
+        <p>JSON (JavaScript Object Notation) is a lightweight, human-readable format widely used for data interchange in web applications, APIs, and configuration files. But when JSON is minified or malformed, it can be a nightmare to read or debug. That's where JSON Formatify shines—offering instant formatting, validation, and advanced features like tree view navigation and real-time search.</p>
+        <p>Unlike command-line tools like jq or heavy IDE plugins, JSON Formatify runs entirely in your browser, ensuring privacy and speed. It's perfect for frontend and backend developers, data analysts, and anyone dealing with JSON on a daily basis.</p>
+
+        <h3>Key Features of Our JSON Formatter Tool</h3>
+        <ul class="features-list">
+            <li><strong>Instant JSON Formatting & Beautifying:</strong> Pretty-print JSON with customizable indentation for easy readability.</li>
+            <li><strong>Built-in JSON Validator:</strong> Detect and highlight syntax errors with line numbers and helpful fixes.</li>
+            <li><strong>JSON Minifier/Compactor:</strong> Compress JSON to reduce file size for production use.</li>
+            <li><strong>Interactive Tree View:</strong> Navigate complex nested objects and arrays like a pro.</li>
+            <li><strong>Real-Time Search & Highlight:</strong> Quickly find keys, values, or paths in large JSON datasets.</li>
+            <li><strong>Copy & Download Options:</strong> Export formatted JSON as files or copy to clipboard instantly.</li>
+            <li><strong>Dark Mode Support:</strong> Eye-friendly interface for late-night coding sessions.</li>
+            <li><strong>JSON Repair/Fixer:</strong> Automatically correct common issues like missing quotes or trailing commas.</li>
+            <li><strong>Cross-Platform Compatibility:</strong> Works seamlessly on Windows, Mac, Linux, and all major browsers.</li>
+            <li><strong>100% Free & Private:</strong> No accounts, no data storage—your JSON stays on your device.</li>
+        </ul>
+
+        <h3>How to Use JSON Formatify: A Quick Guide</h3>
+        <p>Getting started with our <strong>free online JSON tool</strong> is as easy as 1-2-3. Follow these steps to format and validate your JSON data:</p>
+        <ol class="how-to-steps">
+            <li><strong>Paste or Upload Your JSON:</strong> Enter your JSON string into the input box or upload a .json file directly.</li>
+            <li><strong>Format & Validate:</strong> Click "Format," "Beautify," or "Validate" to process your data. Errors? Our fixer will suggest corrections.</li>
+            <li><strong>Explore & Export:</strong> Switch to tree view for navigation, search for specific values, then copy or download the result.</li>
+        </ol>
+        <p><strong>Pro Tip:</strong> For large files, use the tree view to collapse/expand sections and search to pinpoint issues fast. Need to minify for APIs? Hit "Compact" and download instantly.</p>
+        <h4>Example: Formatting a Sample JSON</h4>
+        <p>Try this simple JSON for an insurance company dataset:</p>
+        <pre>{"InsuranceCompanies":{"Top":[{"No":"1","Name":"Berkshire Hathaway","MarketCap":"$655B"}],"source":"investopedia.com"}}</pre>
+        <p>Paste it into our tool, format, and watch it transform into a readable structure!</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 JSON Formatify. All rights reserved. | <a href="#top">Back to Top</a></p>
+    </footer>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const currentTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (currentTheme === 'dark' || (!currentTheme && prefersDark)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkModeToggle.checked = true;
+        }
+
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

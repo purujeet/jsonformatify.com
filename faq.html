@@ -1,0 +1,286 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - JSON Formatify | Free JSON Formatter & Validator</title>
+    <meta name="description" content="Find answers to common questions about JSON Formatify, the free online JSON formatter and validator. Learn about JSON formatting, validation, and more.">
+    <meta name="keywords" content="json formatter faq, json validator faq, online json tool, json beautifier, free json editor">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="JSON Formatify">
+    <meta name="revisit-after" content="1 days">
+    <link rel="canonical" href="https://jsonformatify.com/faq.html">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --logo-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --button-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --button-hover-gradient: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            --pane-bg: #fff;
+            --text-color: #333;
+            --output-bg: #fafafa;
+            --border-color: #ddd;
+            --error-color: #d32f2f;
+            --success-color: #28a745;
+            --highlight-bg: #fff9c4;
+            --tree-string: #d32f2f;
+            --tree-number: #1976d2;
+            --tree-boolean: #7b1fa2;
+            --tree-null: #616161;
+            --toggle-color: #667eea;
+            --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --logo-gradient: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+            --button-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --button-hover-gradient: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            --pane-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --output-bg: #1a1a1a;
+            --border-color: #444;
+            --error-color: #dc3545;
+            --success-color: #198754;
+            --highlight-bg: #333300;
+            --tree-string: #ff6b6b;
+            --tree-number: #4dabf7;
+            --tree-boolean: #a855f7;
+            --tree-null: #9ca3af;
+            --toggle-color: #4f46e5;
+            --button-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        nav {
+            background: var(--logo-gradient);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: none;
+            transition: background 0.3s ease;
+        }
+
+        .logo-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .theme-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--toggle-color);
+        }
+
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: var(--pane-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--toggle-color);
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--toggle-color);
+        }
+
+        .faq-answer {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .faq-answer.show {
+            display: block;
+        }
+
+        footer {
+            background: var(--logo-gradient);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo-content">
+            <div class="logo-text">jsonformatify.com</div>
+            <div class="subtitle">Best JSON Formatter and Validator</div>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="faq.html">FAQ</a>
+            <div class="theme-toggle">
+                <input type="checkbox" id="darkModeToggle">
+                <label for="darkModeToggle">Dark Mode</label>
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-section">
+        <h2>Frequently Asked Questions (FAQ)</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show')">What is a JSON formatter and why do I need one?</div>
+            <div class="faq-answer">A JSON formatter prettifies minified or messy JSON code by adding indentation, line breaks, and structure. It's essential for debugging APIs, reading config files, or sharing data—making complex objects human-readable without errors.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show')">Is JSON Formatify really free and secure?</div>
+            <div class="faq-answer">Yes! Our tool is 100% free with no sign-ups or limits. All processing happens in your browser, so your data never leaves your device—perfect for sensitive API responses or private projects.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show')">How does the JSON validator work?</div>
+            <div class="faq-answer">Our validator checks against JSON standards (RFC 8259), highlighting syntax errors like missing commas or unquoted keys. It even auto-fixes common issues to save you time.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show')">Can I use this for large JSON files?</div>
+            <div class="faq-answer">Absolutely. Handle files up to several MB with our efficient tree view and search features. For massive datasets, format in chunks if needed.</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.classList.toggle('show')">What makes JSON Formatify better than other tools?</div>
+            <div class="faq-answer">Unlike basic formatters, we combine validation, repair, tree navigation, and search in one intuitive interface. Plus, dark mode and no ads mean a distraction-free experience.</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 JSON Formatify. All rights reserved. | <a href="#top">Back to Top</a></p>
+    </footer>
+
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const currentTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (currentTheme === 'dark' || (!currentTheme && prefersDark)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkModeToggle.checked = true;
+        }
+
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>
