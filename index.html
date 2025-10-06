@@ -177,11 +177,11 @@
             transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
             overflow-y: auto;
             box-shadow: var(--element-shadow);
-            margin-top: 8px; /* Added margin for spacing below buttons */
+            margin-top: 8px;
         }
 
         .json-formatter-container .buttons {
-            margin-bottom: 8px; /* Adjusted to space buttons from textarea */
+            margin-bottom: 8px;
             text-align: center;
             display: flex;
             gap: 6px;
@@ -282,16 +282,16 @@
             cursor: pointer;
             user-select: none;
             font-weight: bold;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease; /* Added transform transition */
             font-size: 12px;
         }
 
-        .json-formatter-container .tree-node.collapsed .toggle::before {
-            content: '>';
+        .json-formatter-container .tree-node.collapsed > .toggle::before {
+            content: '>'; /* Explicitly set for collapsed state */
         }
 
-        .json-formatter-container .tree-node:not(.collapsed) .toggle::before {
-            content: '>';
+        .json-formatter-container .tree-node:not(.collapsed) > .toggle::before {
+            content: '>'; /* Explicitly set for expanded state */
             display: inline-block;
             transform: rotate(90deg);
         }
@@ -832,6 +832,8 @@
         function toggleNode(toggle, li) {
             const isCollapsed = li.classList.contains('collapsed');
             li.classList.toggle('collapsed', !isCollapsed);
+            // Force reflow to ensure CSS updates
+            toggle.offsetHeight; // Accessing offsetHeight triggers reflow
         }
 
         function searchTree() {
