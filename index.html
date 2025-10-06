@@ -53,15 +53,20 @@
             --button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
         }
 
-        body {
+        html, body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            height: 100%;
+            overflow: hidden;
             font-family: Arial, sans-serif;
             background: var(--bg-gradient);
             color: var(--text-color);
             transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         nav {
@@ -136,6 +141,8 @@
             background: transparent;
             isolation: isolate;
             transition: background 0.3s ease;
+            max-height: calc(100vh - 80px - 60px);
+            overflow: hidden;
         }
 
         .json-formatter-container .pane {
@@ -149,11 +156,12 @@
             color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 100%;
+            overflow: hidden;
         }
 
         .json-formatter-container textarea {
-            width: 100%;
-            height: 80%;
+            flex: 1;
             resize: none;
             font-family: 'Courier New', monospace;
             font-size: 13px;
@@ -164,6 +172,7 @@
             background-color: var(--pane-bg);
             color: var(--text-color);
             transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            overflow-y: auto;
         }
 
         .json-formatter-container .buttons {
@@ -199,7 +208,7 @@
         }
 
         .json-formatter-container #output {
-            height: 70%;
+            flex: 1;
             overflow-y: auto;
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -351,6 +360,7 @@
             text-align: center;
             padding: 20px;
             margin-top: auto;
+            flex: none;
         }
 
         footer a {
@@ -387,10 +397,10 @@
             <h3>Input JSON</h3>
             <textarea id="inputJson" placeholder="Paste your JSON here..."></textarea>
             <div class="buttons">
-                <button onclick="formatJson()">Format</button>
-                <button onclick="compactJson()">Compact</button>
-                <button onclick="beautifyJson()">Beautify</button>
-                <button onclick="correctJson()">Fix JSON</button>
+                <button id="formatBtn">Format</button>
+                <button id="compactBtn">Compact</button>
+                <button id="beautifyBtn">Beautify</button>
+                <button id="correctBtn">Fix JSON</button>
             </div>
             <div id="inputError" class="error"></div>
         </div>
@@ -400,17 +410,17 @@
             <div id="outputSuccess" class="success"></div>
             <div class="controls">
                 <input id="searchInput" type="text" placeholder="Search JSON...">
-                <button onclick="searchTree()">Search</button>
-                <button onclick="validateJson()">Validate</button>
-                <button onclick="copyJson()">Copy</button>
-                <button onclick="downloadJson()">Download</button>
-                <select id="viewSelect" onchange="changeView()">
+                <button id="searchBtn">Search</button>
+                <button id="validateBtn">Validate</button>
+                <button id="copyBtn">Copy</button>
+                <button id="downloadBtn">Download</button>
+                <select id="viewSelect">
                     <option value="tree">Tree View</option>
                     <option value="indentation">Indentation View</option>
                 </select>
                 <div id="treeControls" style="display: none;">
-                    <button onclick="collapseAll()">Collapse All</button>
-                    <button onclick="expandAll()">Expand All</button>
+                    <button id="collapseBtn">Collapse All</button>
+                    <button id="expandBtn">Expand All</button>
                 </div>
             </div>
             <div id="output"></div>
@@ -861,6 +871,23 @@
             }
         }
 
+        // Event listeners for buttons
+        document.getElementById('formatBtn').addEventListener('click', formatJson);
+        document.getElementById('compactBtn').addEventListener('click', compactJson);
+        document.getElementById('beautifyBtn').addEventListener('click', beautifyJson);
+        document.getElementById('correctBtn').addEventListener('click', correctJson);
+        document.getElementById('searchBtn').addEventListener('click', searchTree);
+        document.getElementById('validateBtn').addEventListener('click', validateJson);
+        document.getElementById('copyBtn').addEventListener('click', copyJson);
+        document.getElementById('downloadBtn').addEventListener('click', downloadJson);
+        document.getElementById('collapseBtn').addEventListener('click', collapseAll);
+        document.getElementById('expandBtn').addEventListener('click', expandAll);
+        document.getElementById('viewSelect').addEventListener('change', changeView);
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchTree();
+            }
+        });
         document.getElementById('inputJson').addEventListener('input', function() {
             const input = this.value;
             const inputError = document.getElementById('inputError');
@@ -879,12 +906,6 @@
                 parsedJson = null;
                 formattedJson = '';
                 document.getElementById('output').innerHTML = '';
-            }
-        });
-
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchTree();
             }
         });
     </script>
